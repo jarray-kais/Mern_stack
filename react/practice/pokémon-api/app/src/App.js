@@ -6,18 +6,18 @@ function App() {
 const [namepok, setNamepok] = useState([])
 useEffect(()=>{
   fetch("https://pokeapi.co/api/v2/pokemon?limit=807").then((namePok)=>{
-    console.log(namePok)
+    // not the actual JSON response body but the entire HTTP response
     return namePok.json()
   }).then(namePok=>{
-    console.log(namePok)
-    setNamepok(namePok.data.results)
-    console.log(namePok)
+    setNamepok(namePok.results)
+     // we now run another promise to parse the HTTP response into usable JSON
+    console.log(namePok.results)
   })
   .catch((err)=>{
     console.log(err)
   })
 
-})
+},[]) // This empty array forces useEffect to render ONLY when the component first renders
 
 
   return (
@@ -26,10 +26,10 @@ useEffect(()=>{
       fetch pokémon API assignment
     </h1>
     <ul>
-    { namepok.map((pok,index)=>(
+    {
+      namepok.map((pok,index)=>(
       <li key={index}>{pok.name}</li>
     ))}
-      <li></li>
     </ul>
     </div>
   );
