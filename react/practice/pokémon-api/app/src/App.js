@@ -17,7 +17,7 @@ useEffect(()=>{
     console.log(err)
   })
 
-},[]) // This empty array forces useEffect to render ONLY when the component first renders
+},[]) // This empty array forces useEffect to render ONLY when the component first renders:dependecies array
 
 
   return (
