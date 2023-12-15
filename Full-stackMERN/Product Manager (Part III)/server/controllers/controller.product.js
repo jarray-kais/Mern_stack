@@ -1,4 +1,4 @@
-const Products = require("../models/model.product")
+const Products = require ("../models/model.product")
 
 module.exports.CreatNewProduct=(req,res)=>{
     Products.create(req.body)
