@@ -6,25 +6,27 @@
 
 
 .form-fields{
-  color:rgb(136, 135, 135);
+  color:rgb(20, 4, 90);
   display: flex;
   justify-content: space-between;
   width: 300px;
   margin: auto;
   border-radius: 30px;
   padding:15px;
-  background-color: rgb(236, 236, 236);
+  background-color: rgb(95, 133, 145);
 }
 
 .form-fields>input{
   border-radius: 30px;
+  background-color: rgb(194, 216, 216);
 }
 
 .submit-input{
   padding: 10px 20px;
   border: none;
   border-radius: 10px;
-  display: flex;
+  background-color:rgb(95, 133, 145) ;
+
  margin-left: 43%;
  
 }
@@ -33,4 +35,37 @@ header{
   margin: 25px 0px;
   text-align: center;
 }
+.error{
 
+  background-color: rgb(226, 13, 13);
+  width: 200px;
+  margin-left: 50px;
+}
+body{
+  background-image: url(./images/img.jpg);
+  background-size: cover;
+}
+
+.container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#box{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+}
+.box1{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.box1>button{
+  width: 250px;
+  height: 50px;
+
+}

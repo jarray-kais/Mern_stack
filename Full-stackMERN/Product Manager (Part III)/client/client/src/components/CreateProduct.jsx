@@ -1,5 +1,6 @@
 import React, { useState , useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const CreateProduct = () => {
 
@@ -10,6 +11,7 @@ const CreateProduct = () => {
   const [description, setDescription] = useState("");
 
   const [errors, setErrors] = useState([]);
+  const navigate=useNavigate()
   const submitHandler = (e)=>{
     //A form whose button is clicked has a default action which will clear state and refresh the page
       //we prevent that default with the following line:
@@ -29,6 +31,7 @@ const CreateProduct = () => {
         setTitle("")
         setPrice("")
         setDescription("")
+        navigate('/')
     })
     .catch(err => {
       const errorResponse = err.response.data.errors; // Get the errors from err.response.data
@@ -43,16 +46,18 @@ const CreateProduct = () => {
   }
 
   return (
-      <div>
+      <div className="container">
           
           <header>
             Product Manager
           </header>
 
           <form onSubmit={submitHandler}>
+          <div className="error">
           {errors.map((err, index) => (
-                    <p key="{index}" style={{ color: "red" }}>{err}</p>
+                    <p key="{index}" style={{ color: "white" }}>{err}</p>
                 ))}
+                </div>
               <div className="form-fields">
                   <label>Title</label>
                   <input

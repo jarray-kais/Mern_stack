@@ -9,6 +9,7 @@ const Update = () => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [errors, setErrors] = useState([])
 
   useEffect(() => {
     axios
@@ -36,13 +37,26 @@ const Update = () => {
         console.log(res.data);
         nav("/");
       })
-      .catch((err) => console.log(err));
+      .catch(err => {
+        const errorResponse = err.response.data.errors; // Get the errors from err.response.data
+        const errorArr = []; // Define a temp error array to push the messages in
+        for (const key of Object.keys(errorResponse)) { // Loop through all errors and get the messages
+            errorArr.push(errorResponse[key].message)
+        }
+        // Set Errors
+        setErrors(errorArr);
+    })
   };
 
   return (
-    <div>
+    <div className="container">
       <header>Product Manager</header>
       <form onSubmit={updateHandler}>
+      <div className="error">
+      {errors.map((err, index) => (
+                    <p key="{index}" style={{ color: "white" }}>{err}</p>
+                ))}
+                </div>
         <div className="form-fields">
           <label>Title</label>
           <input

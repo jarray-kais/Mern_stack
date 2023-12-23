@@ -1,12 +1,14 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams,useNavigate } from 'react-router-dom'
 import ListGroup from 'react-bootstrap/ListGroup';
+import Button from 'react-bootstrap/esm/Button';
 
 const ShowOne = () => {
 
     const { id } = useParams()
     const [thisproduct, setProduct] = useState(null)
+    const nav=useNavigate()
     useEffect(() => {
         axios.get("http://localhost:5000/api/product/" + id)
             .then(res => {
@@ -28,6 +30,7 @@ const ShowOne = () => {
             <ul style={{listStyleType :"none"}}>
             
                 <h1>{thisproduct.title}</h1>
+                <Button onClick={()=>nav('/')}>Acceuil</Button>
              
             <ListGroup style={{margin : "10px 20px"}}>
                 <ListGroup.Item >
