@@ -21,6 +21,6 @@ class User {
   const crow = new User("Crow T. Robot", "hamdingers@gizmonic.com");
   const tom = new User("Tom Servo", "tommonster@gizmonic.com");
   
-  tom.makeDeposit(200);
+  crow.makeDeposit(200).makeDeposit(100).displayInfo();
   
   // keep going
