@@ -17,10 +17,11 @@ const Signup = () => {
         axios.post('http://localhost:5000/api/register', {name,email,password})
         .then((result)=>{
             console.log(result)
+            navigate('/home')
             setName("")
             setEmail("")
             setPassword("")
-            navigate('/home')
+            
 
         })
         .catch(err => {

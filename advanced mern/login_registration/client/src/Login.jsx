@@ -17,11 +17,10 @@ const Login = () => {
         .then((result)=>{
             console.log(result)
             if(result.data ==="success"){
-
-           
+              navigate('/home')
             setEmail("")
             setPassword("")
-            navigate('/home') 
+             
         }
 
         })
@@ -40,10 +39,8 @@ const Login = () => {
         className="d-flex justify-content-center align-items-center bg-secondary vh-100">
       <div className="bg-white p-3 rounded w-25">
         <h2>Login</h2>
-        <div>
         {errors.map((err, index) => (
                     <p key="{index}" style={{ color: "red" }}>{err}</p>))}
-                    </div>
         <Form onSubmit={submitHandler}
         >
           <Form.Group className="mb-3">
