@@ -11,6 +11,16 @@ export async function passwordValidate(values){
     return errors
 }
 
+/** validate reset password  */
+export async function resetPasswordValidation(values){
+    const errors= passwordVerify({},values)
+
+    if(values.password != values.confirm_pwd){
+        errors.exist = toast.error('password not much')
+    }
+    return errors
+}
+
 
 /** validate password */
 function passwordVerify(errors={},values){
