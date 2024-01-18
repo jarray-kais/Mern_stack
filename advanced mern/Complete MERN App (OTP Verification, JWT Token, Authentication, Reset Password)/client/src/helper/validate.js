@@ -21,6 +21,21 @@ export async function resetPasswordValidation(values){
     return errors
 }
 
+/** validate register form */
+export async function registerValidation(values){
+    const errors = usernameVerify({},values);
+    passwordVerify(errors , values);
+    emailVerify(errors,values);
+
+    return errors
+}
+
+/**validate profile page */
+export async function profileValidation(values){
+    const error = emailVerify({},values)
+
+    return error
+}
 
 /** validate password */
 function passwordVerify(errors={},values){
@@ -45,6 +60,7 @@ function passwordVerify(errors={},values){
 
 
 
+
 /*validate username */
 function usernameVerify(error ={},values){
     if(!values.username){
@@ -55,5 +71,22 @@ function usernameVerify(error ={},values){
         error.username = toast.error('Invalid Username ...!')
 
     }
+    return  error
+}
+/**validate email */
+function emailVerify(error ={},values){
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+    if(!values.email){
+        error.email=toast.error('email Required ...!')
+    }
+    //The includes() method returns true if a string contains a specified string.Otherwise it returns false.
+    else if(values.email.includes(" ")){
+        error.email = toast.error('wrong email ...!')
+    }
+    else if(!emailRegex.test(values.email)){
+        email.error=toast.error("Invalid email adress")
+    }
+
+    
     return  error
 }
