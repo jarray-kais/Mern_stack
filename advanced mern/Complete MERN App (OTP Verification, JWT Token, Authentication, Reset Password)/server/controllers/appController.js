@@ -11,6 +11,7 @@ export async function verifyUser(req , res , next){
         let exist =await UserModel.findOne({username})
         if(!exist) return res.status(400).send({err :"can't find user!"})
         next()
+    
     }
     catch{
         return res.status(404).send({error : "Authentication error"})
@@ -126,12 +127,28 @@ export async function login(req,res){
 
 
 /** GET: http://localhost:8000/api/user/example123 */
-export async function getUser(req,res){}
+export async function getUser(req,res){
+    const {username} = req.params
+    try {
+        if(!username)return res.status(501).json({err :"Invalid username"})
+
+        UserModel.findOne({username}, function(err , user){
+            if(err) return res.status(501).json({err})
+            if(!user) return res.status(501).json({err :"couldn't find the User"})
+            /**remove password from user */
+        const {password , ...rest} = Object.assign({},user.toJSON())
+        return res.status(201).json(rest)
+        })
+        
+    } catch (error) {
+        res.status(404).json({err :"cannot find User data"})
+    }
+}
 
 
 /** PUT: http://localhost:8000/api/updateuser 
  * @param: {
-  "header" : "<token>"
+  "id" : "<userid>"
 }
 body: {
     firstName: '',
@@ -139,7 +156,29 @@ body: {
     profile : ''
 }
 */
-export async function updateUser(req,res){}
+export async function updateUser(req,res){
+    try {
+        
+       const id = req.query.id;
+
+        if(id){
+            const body = req.body;
+
+            // update the data
+            UserModel.updateOne({ _id : id }, body, function(err, data){
+                if(err) throw err;
+
+                return res.status(201).send({ msg : "Record Updated...!"});
+            })
+
+        }else{
+            return res.status(401).send({ error : "User Not Found...!"});
+        }
+
+    } catch (error) {
+        return res.status(401).send({ error });
+    }
+}
 
 
 
