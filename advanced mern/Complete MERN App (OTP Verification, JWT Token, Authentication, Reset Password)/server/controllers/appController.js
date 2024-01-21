@@ -1,0 +1,118 @@
+import UserModel from "../model/User.model.js";
+import bcrypt from 'bcrypt'
+
+/** POST: http://localhost:8000/api/register 
+ * @param : {
+  "username" : "example123",
+  "password" : "admin123",
+  "email": "example@gmail.com",
+  "firstName" : "bill",
+  "lastName": "william",
+  "mobile": 8009860560,
+  "address" : "Apt. 556, Kulas Light, Gwenborough",
+  "profile": ""
+}
+*/
+export async function register(req,res){
+    try{
+        const {username , password , profile ,email} =req.body
+        //check the existing user
+        const existUsername= new Promise((resolve , reject)=>{
+            UserModel.findOne({username},function(err,user){
+                if(err) reject(new Error(err))
+                if(user) reject({error : "please use unique username"})
+                resolve()
+            })
+        })
+        //check for exixting email
+        const existEmail= new Promise((resolve , reject)=>{
+            UserModel.findOne({email},function(err,email){
+                if(err) reject(new Error(err))
+                if(email) reject({error : "please use unique email"})
+                resolve()
+            })
+        })
+
+        Promise.all([existUsername , existEmail])
+        .then(()=>{
+            if(password){
+                bcrypt.hash(password , 10)
+                    .then(hashedPassword =>{
+                        const user = new UserModel({
+                            username,
+                            password : hashedPassword , 
+                            profile : profile || '',
+                            email
+                        })
+                        //return save result as a response
+                        user.save()
+                        .then(result =>res.status(201).send({ msg: "User Register Successfully"}))
+                        .catch(err =>res.status(500).send({err}))
+
+                    }).catch(err=>{
+                        return res.status(500).json({err : "Enable to hashed password"})
+                    })
+            }
+
+        }).catch(err =>{
+            return res.status(500).json(err)
+        })
+
+    }
+    catch(error){
+        return res.status(500).json(error)
+
+    }
+}
+
+
+
+
+/** POST: http://localhost:8000/api/login 
+ * @param: {
+  "username" : "example123",
+  "password" : "admin123"
+}
+*/
+export async function login(req,res){}
+
+
+/** GET: http://localhost:8000/api/user/example123 */
+export async function getUser(req,res){}
+
+
+/** PUT: http://localhost:8000/api/updateuser 
+ * @param: {
+  "header" : "<token>"
+}
+body: {
+    firstName: '',
+    address : '',
+    profile : ''
+}
+*/
+export async function updateUser(req,res){}
+
+
+
+/** GET: http://localhost:8000/api/generateOTP */
+export async function generateOTP(req,res){}
+
+
+
+
+/** GET: http://localhost:8000/api/verifyOTP */
+export async function verifyOTP(req,res){}
+
+
+
+// successfully redirect user when OTP is valid
+/** GET: http://localhost:8000/api/createResetSession */
+export async function createResetSession(req,res){}
+
+
+
+
+// update the password when we have valid session
+/** PUT: http://localhost:8000/api/resetPassword */
+export async function resetPassword(req,res){}
