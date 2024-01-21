@@ -1,5 +1,21 @@
 import UserModel from "../model/User.model.js";
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import ENV from '../JWT/config.js'
+
+
+/**middlware for verify user */
+export async function verifyUser(req , res , next){
+    try{
+        const {username} =req.body == "GET"? req.query : req.body;
+        let exist =await UserModel.findOne({username})
+        if(!exist) return res.status(400).send({err :"can't find user!"})
+        next()
+    }
+    catch{
+        return res.status(404).send({error : "Authentication error"})
+    }
+}
 
 /** POST: http://localhost:8000/api/register 
  * @param : {
@@ -74,7 +90,39 @@ export async function register(req,res){
   "password" : "admin123"
 }
 */
-export async function login(req,res){}
+export async function login(req,res){
+    const {username , password} = req.body
+    try {
+        UserModel.findOne({username})
+        .then(user =>{
+            bcrypt.compare(password , user.password)
+                .then(passwordCheck =>{
+                    if(!passwordCheck) return res.status(400).send({error : "Don't have password"})
+                    const token =jwt.sign({
+                            userId : user._id ,
+                            username : user.username
+                    },ENV.JWT_SECRET , {expiresIn : "24h"});
+                    return res.status(200).send({
+                        msg :"Login secceful...!",
+                        username : user.username,
+                        token
+                    })
+                })
+                .catch(error =>{
+                    res.status(400).send({error : "pasword does not much"})
+                })
+        })
+        .catch(error =>{
+            res.status(400).send({error : "username not found"})
+        })
+
+    }
+    catch(error){
+        
+            return res.status(500).json(error)
+
+    }
+}
 
 
 /** GET: http://localhost:8000/api/user/example123 */
