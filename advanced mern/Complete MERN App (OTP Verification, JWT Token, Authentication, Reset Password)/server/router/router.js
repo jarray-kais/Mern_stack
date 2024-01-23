@@ -1,8 +1,12 @@
 import {Router} from "express";
 const router = Router();
 
+
+
 /**import all controller */
 import * as controller from '../controllers/appController.js'
+
+import Auth ,{localVaribles} from "../middleware/Auth.js"
 
 /** POST Methods */
 router.route('/register').post(controller.register); // register user
@@ -12,13 +16,13 @@ router.route('/login').post(controller.verifyUser,controller.login); // login in
 
 /**GET Methods */
 router.route('/user/:username').get(controller.getUser) // user with username
-router.route('/generateOTP').get(controller.generateOTP) // generate random OTP
+router.route('/generateOTP').get(controller.verifyUser, localVaribles , controller.generateOTP) // generate random OTP
 router.route('/verifyOTP').get(controller.verifyOTP) // verify generated OTP
 router.route('/createResetSession').get(controller.createResetSession) // reset all the variables
 
 
 /**PUT Methods */
-router.route('/updateuser').put(controller.updateUser) // is use to update the user profile
+router.route('/updateuser').put(Auth ,controller.updateUser) // is use to update the user profile
 router.route('/resetPassword').put(controller.resetPassword) // use to reset password
 
 export default router ;
