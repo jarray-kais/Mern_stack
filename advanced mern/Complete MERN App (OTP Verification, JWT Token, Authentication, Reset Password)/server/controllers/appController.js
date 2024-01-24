@@ -9,13 +9,11 @@ import otpGenrator from "otp-generator"
 export async function verifyUser(req , res , next){
     try{
         const { username } = req.method == "GET" ? req.query : req.body;
-        console.log(username)
 
         //check the user existance
-        let exist =await UserModel.findOne({username})
+        let exist = await UserModel.findOne({username})
         if(!exist) return res.status(400).send({err :"can't find user!"})
         next()
-    console.log(username ,'2')
     
     }
     catch{
@@ -203,7 +201,7 @@ export async function verifyOTP(req,res){
     const {code} = req.query;
     if (parseInt(req.app.locals.OTP)===parseInt(code)){
         req.app.locals.OTP = null;  //rest the OTP value
-        req.app.locals.OTP = true;  //start session for reset password
+        req.app.locals.resetSession = true;  //start session for reset password
         return res.status(201).send({msg : 'verify successfull!'})
 
     }
@@ -215,11 +213,42 @@ export async function verifyOTP(req,res){
 
 // successfully redirect user when OTP is valid
 /** GET: http://localhost:8000/api/createResetSession */
-export async function createResetSession(req,res){}
+export async function createResetSession(req,res){
+    if (req.app.locals.resetSession){
+        req.app.locals.resetSession = false ; //allow access to this route only once
+        return res.status(200).json({msg : 'Session granted'})
+    }
+    return  res.status(400).json({err : 'Session expired!'})
+}
 
 
 
 
 // update the password when we have valid session
 /** PUT: http://localhost:8000/api/resetPassword */
-export async function resetPassword(req,res){}
+export async function resetPassword(req,res){
+    if(!req.app.locals.resetSession) return res.status(440).send({error : "Session expired!"});
+    try {
+        const {username , password}= req.body
+        try {
+            UserModel.findOne({username})
+            .then(user=>{
+                bcrypt.hash(password,10)
+                .then(hashedPassword=>{
+                    UserModel.updateOne({username : user.username},{password : hashedPassword}, function(err,data){
+                        if(err) throw err;
+                        req.app.locals.resetSession = false
+                        return res.status(200).json({msg :"Recoprd Updated...!"})
+                    })
+                })
+                .catch(err=>{res.status(400).json(err ,"Enable to hashed password")
+                })
+            })
+        } catch (error) {
+            res.status(400).json({error :"Username not found"})
+        }
+    } catch (error) {
+        res.status(400).json({error})
+        
+    }
+}
